@@ -1,0 +1,47 @@
+ //using (var httpClient = new HttpClient())
+            //{
+            //    using (var request = new HttpRequestMessage(new HttpMethod("POST"), "http://34.210.70.128:8080/api/internal/login"))
+            //    {
+            //        request.Headers.TryAddWithoutValidation("Accept", "application/json");//Accept
+
+            //        request.Content = new StringContent("{  \n   \"email\": \"admin\",  \n   \"password\": \"admin\"  \n }");
+            //        request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
+            //        //request.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("Grpc-Metadata-Content");
+
+            //        var response = await httpClient.SendAsync(request);
+            //        if(response.IsSuccessStatusCode)
+            //        {
+            //           string demoResponse = await response.Content.ReadAsStringAsync();
+            //            demoResponse = demoResponse.Substring(7);
+            //        }
+
+            //    }
+            //    //devui to All the details of the meter already uploaded(below)
+            //    using (var request = new HttpRequestMessage(new HttpMethod("GET"), "http://34.210.70.128:8080/api/devices/0e504b3735508237"))
+            //    {
+            //        request.Headers.TryAddWithoutValidation("Accept", "application/json");
+            //        request.Headers.TryAddWithoutValidation("Grpc-Metadata-Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJjaGlycHN0YWNrLWFwcGxpY2F0aW9uLXNlcnZlciIsImV4cCI6MTU5ODAxNjg0MSwiaWQiOjEsImlzcyI6ImNoaXJwc3RhY2stYXBwbGljYXRpb24tc2VydmVyIiwibmJmIjoxNTk3OTMwNDQxLCJzdWIiOiJ1c2VyIiwidXNlcm5hbWUiOiJhZG1pbiJ9.nKYNcXFsXeckbESlVqo6KGHa-pmoZB5c8m4ScACbLVk");
+
+            //        var response = await httpClient.SendAsync(request);
+            //        if (response.IsSuccessStatusCode)
+            //        {
+            //            string demoResponse1 = await response.Content.ReadAsStringAsync();
+            //        }
+            //    }
+
+            //}//comented till this line above is valid code
+            //using (var request = new HttpRequestMessage(new HttpMethod("GET"), "http://34.210.70.128:8080/api/devices/0e504b3735508237/keys"))
+            //{
+            //    //request.Headers.TryAddWithoutValidation("Accept", "application/json");
+            //    //request.Headers.TryAddWithoutValidation("Grpc-Metadata-Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJjaGlycHN0YWNrLWFwcGxpY2F0aW9uLXNlcnZlciIsImV4cCI6MTU5Nzc1NjgyOCwiaWQiOjEsImlzcyI6ImNoaXJwc3RhY2stYXBwbGljYXRpb24tc2VydmVyIiwibmJmIjoxNTk3NjcwNDI4LCJzdWIiOiJ1c2VyIiwidXNlcm5hbWUiOiJhZG1pbiJ9.pTQSda8MGj507OOKnCmb5R8t9oH9S7UOx_8ZAvHKwoY");
+            //    //request.Headers.TryAddWithoutValidation("grpc-metadata-trailer", "nwkKey");
+            //    //HttpResponseMessage response = await client.SendAsync(request);
+            //    //if (response.IsSuccessStatusCode)
+            //    //{
+
+            //    //    //var product = await response.Content.ReadAsAsync<Demo>();
+            //    //    //Console.WriteLine("{0}\t${1}\t{2}", product.Name, product.Price, product.Category);
+            //    //}
+
+
+            //}
