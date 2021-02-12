@@ -73,10 +73,15 @@
             this.Button_RefreshTab2 = new System.Windows.Forms.Button();
             this.Button_AMRcheck = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.textBox_EndsightFile = new System.Windows.Forms.TextBox();
             this.textBox_BrowsedFileName = new System.Windows.Forms.TextBox();
             this.button6 = new System.Windows.Forms.Button();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.monthCalendar1 = new System.Windows.Forms.MonthCalendar();
+            this.checkBoxT1_useALT = new System.Windows.Forms.CheckBox();
+            this.label26 = new System.Windows.Forms.Label();
+            this.comboBox_DB = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.TextBox_UserDateInput = new System.Windows.Forms.TextBox();
@@ -112,8 +117,6 @@
             this.ChrpSHelp = new System.Windows.Forms.ToolTip(this.components);
             this.toolTip_UpdateAllMeters = new System.Windows.Forms.ToolTip(this.components);
             this.richTextBox_Temp = new System.Windows.Forms.RichTextBox();
-            this.comboBox_DB = new System.Windows.Forms.ComboBox();
-            this.label26 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabPage3.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -403,7 +406,7 @@
             // label18
             // 
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(71, 122);
+            this.label18.Location = new System.Drawing.Point(71, 151);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(248, 13);
             this.label18.TabIndex = 10;
@@ -558,14 +561,23 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.textBox_EndsightFile);
             this.groupBox4.Controls.Add(this.textBox_BrowsedFileName);
             this.groupBox4.Controls.Add(this.button6);
             this.groupBox4.Location = new System.Drawing.Point(29, 67);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(290, 52);
+            this.groupBox4.Size = new System.Drawing.Size(290, 81);
             this.groupBox4.TabIndex = 2;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Production";
+            // 
+            // textBox_EndsightFile
+            // 
+            this.textBox_EndsightFile.ForeColor = System.Drawing.Color.DarkGray;
+            this.textBox_EndsightFile.Location = new System.Drawing.Point(7, 46);
+            this.textBox_EndsightFile.Name = "textBox_EndsightFile";
+            this.textBox_EndsightFile.Size = new System.Drawing.Size(274, 20);
+            this.textBox_EndsightFile.TabIndex = 3;
             // 
             // textBox_BrowsedFileName
             // 
@@ -601,6 +613,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.monthCalendar1);
+            this.groupBox2.Controls.Add(this.checkBoxT1_useALT);
             this.groupBox2.Controls.Add(this.label26);
             this.groupBox2.Controls.Add(this.comboBox_DB);
             this.groupBox2.Controls.Add(this.label6);
@@ -608,18 +622,64 @@
             this.groupBox2.Controls.Add(this.TextBox_UserDateInput);
             this.groupBox2.Controls.Add(this.TextBox__MergeFileinput);
             this.groupBox2.Controls.Add(this.Button_Merge);
-            this.groupBox2.Location = new System.Drawing.Point(6, 39);
+            this.groupBox2.Location = new System.Drawing.Point(6, 6);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(333, 156);
+            this.groupBox2.Size = new System.Drawing.Size(333, 189);
             this.groupBox2.TabIndex = 9;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "File Functions";
+            // 
+            // monthCalendar1
+            // 
+            this.monthCalendar1.Location = new System.Drawing.Point(98, 18);
+            this.monthCalendar1.Name = "monthCalendar1";
+            this.monthCalendar1.TabIndex = 35;
+            this.monthCalendar1.DateSelected += new System.Windows.Forms.DateRangeEventHandler(this.monthCalendar1_DateSelected);
+            // 
+            // checkBoxT1_useALT
+            // 
+            this.checkBoxT1_useALT.AutoSize = true;
+            this.checkBoxT1_useALT.Location = new System.Drawing.Point(9, 148);
+            this.checkBoxT1_useALT.Name = "checkBoxT1_useALT";
+            this.checkBoxT1_useALT.Size = new System.Drawing.Size(80, 17);
+            this.checkBoxT1_useALT.TabIndex = 34;
+            this.checkBoxT1_useALT.Text = "use ALT ID";
+            this.checkBoxT1_useALT.UseVisualStyleBackColor = true;
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label26.Location = new System.Drawing.Point(274, 168);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(46, 12);
+            this.label26.TabIndex = 33;
+            this.label26.Text = "DataBase";
+            // 
+            // comboBox_DB
+            // 
+            this.comboBox_DB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.comboBox_DB.FormattingEnabled = true;
+            this.comboBox_DB.Items.AddRange(new object[] {
+            "LoraReturnsVision",
+            "Lora2021Vision",
+            "LoraGasVision",
+            "LoraVision",
+            "Lora",
+            ""});
+            this.comboBox_DB.Location = new System.Drawing.Point(105, 144);
+            this.comboBox_DB.Name = "comboBox_DB";
+            this.comboBox_DB.Size = new System.Drawing.Size(215, 21);
+            this.comboBox_DB.TabIndex = 32;
+            this.comboBox_DB.Text = "Select DataBase";
+            this.comboBox_DB.DropDown += new System.EventHandler(this.comboBox_DB_DropDown);
+            this.comboBox_DB.DropDownClosed += new System.EventHandler(this.comboBox_DB_DropDownClosed);
             // 
             // label6
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(7, 92);
+            this.label6.Location = new System.Drawing.Point(7, 127);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(67, 12);
             this.label6.TabIndex = 11;
@@ -638,10 +698,11 @@
             // TextBox_UserDateInput
             // 
             this.TextBox_UserDateInput.AcceptsReturn = true;
-            this.TextBox_UserDateInput.Location = new System.Drawing.Point(9, 69);
+            this.TextBox_UserDateInput.Location = new System.Drawing.Point(9, 104);
             this.TextBox_UserDateInput.Name = "TextBox_UserDateInput";
-            this.TextBox_UserDateInput.Size = new System.Drawing.Size(155, 20);
+            this.TextBox_UserDateInput.Size = new System.Drawing.Size(183, 20);
             this.TextBox_UserDateInput.TabIndex = 1;
+            this.TextBox_UserDateInput.Click += new System.EventHandler(this.TextBox_UserDateInput_Click);
             this.TextBox_UserDateInput.MouseEnter += new System.EventHandler(this.TextBox_UserDateInput_MouseEnter);
             // 
             // TextBox__MergeFileinput
@@ -656,9 +717,9 @@
             // 
             this.Button_Merge.Cursor = System.Windows.Forms.Cursors.Hand;
             this.Button_Merge.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Button_Merge.Location = new System.Drawing.Point(205, 31);
+            this.Button_Merge.Location = new System.Drawing.Point(205, 19);
             this.Button_Merge.Name = "Button_Merge";
-            this.Button_Merge.Size = new System.Drawing.Size(115, 73);
+            this.Button_Merge.Size = new System.Drawing.Size(115, 119);
             this.Button_Merge.TabIndex = 7;
             this.Button_Merge.Text = "File Generator";
             this.Button_Merge.UseVisualStyleBackColor = true;
@@ -828,7 +889,7 @@
             this.comboBoxServerSelect.Name = "comboBoxServerSelect";
             this.comboBoxServerSelect.Size = new System.Drawing.Size(231, 21);
             this.comboBoxServerSelect.TabIndex = 19;
-            this.comboBoxServerSelect.Text = "Select Server Here";
+            this.comboBoxServerSelect.Text = "http://117.100.100.20:8080/api/";
             this.comboBoxServerSelect.SelectedIndexChanged += new System.EventHandler(this.comboBoxServerSelect_SelectedIndexChanged);
             // 
             // TextBox_ApplicationName
@@ -896,35 +957,6 @@
             this.richTextBox_Temp.TabIndex = 19;
             this.richTextBox_Temp.Text = "";
             this.richTextBox_Temp.VisibleChanged += new System.EventHandler(this.richTextBox_Temp_VisibleChanged);
-            // 
-            // comboBox_DB
-            // 
-            this.comboBox_DB.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.comboBox_DB.FormattingEnabled = true;
-            this.comboBox_DB.Items.AddRange(new object[] {
-            "LoraReturnsVision",
-            "Lora2021Vision",
-            "LoraGasVision",
-            "LoraVision",
-            "Lora",
-            ""});
-            this.comboBox_DB.Location = new System.Drawing.Point(9, 110);
-            this.comboBox_DB.Name = "comboBox_DB";
-            this.comboBox_DB.Size = new System.Drawing.Size(311, 21);
-            this.comboBox_DB.TabIndex = 32;
-            this.comboBox_DB.Text = "Select DataBase";
-            this.comboBox_DB.DropDown += new System.EventHandler(this.comboBox_DB_DropDown);
-            this.comboBox_DB.DropDownClosed += new System.EventHandler(this.comboBox_DB_DropDownClosed);
-            // 
-            // label26
-            // 
-            this.label26.AutoSize = true;
-            this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label26.Location = new System.Drawing.Point(7, 134);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(46, 12);
-            this.label26.TabIndex = 33;
-            this.label26.Text = "DataBase";
             // 
             // Form1
             // 
@@ -1055,6 +1087,9 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.ComboBox comboBox_DB;
+        private System.Windows.Forms.CheckBox checkBoxT1_useALT;
+        private System.Windows.Forms.MonthCalendar monthCalendar1;
+        private System.Windows.Forms.TextBox textBox_EndsightFile;
     }
 }
 
