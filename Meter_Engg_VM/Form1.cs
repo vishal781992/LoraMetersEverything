@@ -1,5 +1,6 @@
 ﻿#define DebugTest
 
+using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
 //using System.ComponentModel;
@@ -7,20 +8,12 @@ using System.Collections.Generic;
 //using System.Data.OleDb;
 using System.Drawing;
 using System.IO;
-using System.Linq;
+//using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Net.Http;
+using System.Threading;
 //using System.Text;
 //using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.VisualBasic.FileIO;
-//using Microsoft.WindowsAPICodePack.Dialogs;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Security.Cryptography;
-using System.Windows.Forms.VisualStyles;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Threading;
 //using System.Threading.Tasks;
 //using System.Net.NetworkInformation;
 //using System.Security.Policy;
@@ -36,10 +29,10 @@ namespace Meter_Engg_VM
 
     public partial class Form1 : Form
     {
-        const string ApplicationVersionnumber = "01.00.M";
+        const string ApplicationVersionnumber = "01.00.N";
         const string DiscriptionTextForChange =
-            "Working fine as 02.10.2021.Added editable report address.\r\nAdded support for ALT ID.\r\nAdded manual DataBase Select.";
-        
+            "Working fine as 02.20.2021.Array size increased. Added editable report address.\r\nAdded support for ALT ID.\r\nAdded manual DataBase Select.";
+
         #region Declaration
         #region Declaration of list
         List<string> DevUI = new List<string>();                    //list declarations, All
@@ -59,7 +52,7 @@ namespace Meter_Engg_VM
         List<int> strToIntTimeOPM = new List<int>();
         List<int> MeterID_int = new List<int>();
         List<string> globalCounterForEndsight = new List<string>();
-        
+
         //List<string> AMRCheckMeterID = new List<string>();
 
 
@@ -67,27 +60,27 @@ namespace Meter_Engg_VM
         #endregion Declaration of list
 
         #region Declaration of Arrays
-        string[] TempArrayForDisplayContent = new string[10];       //for displaying the table
-        public string[] Duplicates = new string[700];
-        string[] displayConfigArray = new string[1];
-        string[] AlreadyPresentDevUI = new string[500];
-        string[] tempAryforDuplicates = new string[30];
-        string[] statusCode = new string[600];
-        string[] tempEndMeterID = new string[600];
-        string[] Ary_DataFromTextFile = new string[2000];
+        string[] TempArrayForDisplayContent = new string[2500];       //for displaying the table
+        public string[] Duplicates = new string[2500];
+        string[] displayConfigArray = new string[2500];
+        string[] AlreadyPresentDevUI = new string[2500];
+        string[] tempAryforDuplicates = new string[2500];
+        string[] statusCode = new string[2500];
+        string[] tempEndMeterID = new string[2500];
+        string[] Ary_DataFromTextFile = new string[2500];
 
         #endregion Declaration of Arrays
 
         #region Declaration of other variables
-        ListViewItem itm,itm2;
+        ListViewItem itm, itm2;
         struct StatusCodesFromChirpStackAPI { public int LoginStatus; public int AddingNewDeviceStatus; public int AddingApplicationStatus; public int SearchingExistingApplication; };
         StatusCodesFromChirpStackAPI SCFlag = new StatusCodesFromChirpStackAPI(); public ReturnList rL = new ReturnList();
         Program_SQL psql = new Program_SQL();
-        public enum Profile { UserCTime=1,SystemCTime=2};
+        public enum Profile { UserCTime = 1, SystemCTime = 2 };
         #endregion Declaration of other variables
 
         #region Declaration of Global Strings
-        
+
         string FileInputDir = @"\\Netserver3\data\Loraproduction_Engineering\";// @"C:\MetershopApplicationFolder\InputFile\";//@"C:\Output\";  //change the input here
         const string FileOutgoingDir = @"\\Netserver3\data\Loraproduction_Engineering\" + @"MetershopApplicationFolder\OutputFile\";// @"C:\temp\";
         const string FileOutputForErrorSheets_tab2 = @"\\Netserver3\data\Loraproduction_Engineering\Amrfile\";//"C:\2020_08_26\ErrorModemsfile.csv";
@@ -101,7 +94,7 @@ namespace Meter_Engg_VM
         int CounterForUpdatedMetersToDB;
         string Endsight_File1FullPath; string Endsight_File1Name = string.Empty;
         public string Database;
-        public bool FlagForNextProcesses=true;
+        public bool FlagForNextProcesses = true;
         bool incrementProcessFlag = false;
         #endregion Declaration of Global Strings
 
@@ -123,11 +116,11 @@ namespace Meter_Engg_VM
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
-            richTextBox1.Text = "Welcome Back!\r\nVerify the IP address you are using for Chirpstack before you press Login!\r\nBig files take longer time to process than usual, wait before clicking on any  other button after you press FILE GENERATOR.\r\n"+ DiscriptionTextForChange;
-            MessageBox.Show("Welcome Back!\r\nVersion "+ ApplicationVersionnumber + " " + DiscriptionTextForChange);
-            //richTextBox1.AppendText("Version 01.00.F.Removed the endsight manual file select, now it automatically selects the Latest File from the collection.")
-            //TextBox_Username.Text = "admin";
+
+            richTextBox1.Text = "Welcome Back!\r\nVerify the IP address you are using for Chirpstack before you press Login!" +
+                "\r\nBig files take longer time to process than usual, wait before clicking on any  other button after you press FILE GENERATOR.\r\n" + DiscriptionTextForChange;
+
+            MessageBox.Show("Welcome Back!\r\nVersion " + ApplicationVersionnumber + " " + DiscriptionTextForChange);
             DateTime YearOnly = DateTime.Now; string dateFormatYY_MM_ = YearOnly.ToString("yyyy_MM_");
             TextBox_UserDateInput.Text = dateFormatYY_MM_;
 
@@ -144,9 +137,9 @@ namespace Meter_Engg_VM
 
 
             InitialServerInput();
-            Array.Clear(Ary_DataFromTextFile,0,Ary_DataFromTextFile.Length); monthCalendar1.Visible = false;
+            Array.Clear(Ary_DataFromTextFile, 0, Ary_DataFromTextFile.Length); monthCalendar1.Visible = false;
             groupBox_meterRange.Visible = false; richTextBox_Temp.Visible = false; TextBox__MergeFileinput.Visible = false;
-            textBox_EndsightFile.Text = @"C:\Reports\electric\";
+            textBox_EndsightFile.Text = @"\\netserver3\data\Loraproduction_Engineering\LGW\Endsight\electric\";
             //puts the last used Server Address to the ComboBox
         }
 
@@ -157,7 +150,7 @@ namespace Meter_Engg_VM
         #region Buttons
 
         #region SelectFilePress
-      public void SelectButtonReplacement()
+        public void SelectButtonReplacement()
         {
             this.progressBar_Universal.Step = 5;
             Database = comboBox_DB.Text;
@@ -169,9 +162,9 @@ namespace Meter_Engg_VM
                 #region trying the automated file transfer
                 this.progressBar_Universal.PerformStep(); //progress bar
 
-                strFilename = FileOutgoingDir + dateFormatYY_MM_dd + @"\merge" + dateFormatYY_MM_dd + ".csv"; //MessageBox.Show("Uploading the File from the Default location" + strFilename);
+                strFilename = FileOutgoingDir + dateFormatYY_MM_dd + @"\merge" + dateFormatYY_MM_dd + ".csv";
 
-                if (strFilename != null)//textBox1.Text
+                if (strFilename != null)
                 {
                     string checkCsv = ".csv";
                     string checkProductionFile = "Prod&Database";
@@ -182,7 +175,8 @@ namespace Meter_Engg_VM
                         //FileProcessFunction();
                         FileParsingFunction(strFilename, 0);
                         this.progressBar_Universal.PerformStep();
-                    }else { MessageBox.Show("Production File will not be processed"); }
+                    }
+                    else { MessageBox.Show("Production File will not be processed"); }
                     /*
                         *this function does the file parsing
                         *FileParsingFunction(strFilename,0);
@@ -208,9 +202,9 @@ namespace Meter_Engg_VM
             try
             {
                 int count = 0;
-                foreach(string Dev in DevUI)
+                foreach (string Dev in DevUI)
                 {
-                    if(!string.IsNullOrEmpty(Dev))
+                    if (!string.IsNullOrEmpty(Dev))
                     {
                         TempArrayForDisplayContent[0] = count + ".";   //the columns are designed above
                         TempArrayForDisplayContent[1] = DevUI[count];
@@ -247,7 +241,7 @@ namespace Meter_Engg_VM
             int FileCounter = 1;
             string ExportFileName = "Prod&Database_" + dateFormatYY_MM_dd + "_" + FileCounter + ".csv";  //filename can be updated here
             string path = FileOutgoingDir + dateFormatYY_MM_dd + @"\" + ExportFileName;                  //address + Filename
-            
+
             while (File.Exists(path))
             {
                 FileCounter++;
@@ -267,11 +261,11 @@ namespace Meter_Engg_VM
                     TempArrayForDisplayContent[7] = "Duplicates";
                     TempArrayForDisplayContent[8] = "BatchID";
 
-                    displayConfigArray[0] = TempArrayForDisplayContent[1] + "," + TempArrayForDisplayContent[2] + "," + TempArrayForDisplayContent[3] + "," + TempArrayForDisplayContent[4] + "," + TempArrayForDisplayContent[5] + "," + TempArrayForDisplayContent[6] + "," + TempArrayForDisplayContent[7]+"," + TempArrayForDisplayContent[8];
+                    displayConfigArray[0] = TempArrayForDisplayContent[1] + "," + TempArrayForDisplayContent[2] + "," + TempArrayForDisplayContent[3] + "," + TempArrayForDisplayContent[4] + "," + TempArrayForDisplayContent[5] + "," + TempArrayForDisplayContent[6] + "," + TempArrayForDisplayContent[7] + "," + TempArrayForDisplayContent[8];
                     File.AppendAllLines(path, displayConfigArray);
 
                     string tempStringToCopy = string.Empty;
-                    for(int count = 0;count<DevUI.Count;count++)
+                    for (int count = 0; count < DevUI.Count; count++)
                     {
                         TempArrayForDisplayContent[1] = DevUI[count];
                         TempArrayForDisplayContent[2] = AppKey[count];
@@ -285,9 +279,9 @@ namespace Meter_Engg_VM
                         //displayConfigArray[0] = TempArrayForDisplayContent[1] + "," + TempArrayForDisplayContent[2] + "," + TempArrayForDisplayContent[3] + "," + TempArrayForDisplayContent[4] + "," + TempArrayForDisplayContent[5] + "," + TempArrayForDisplayContent[6] + "," + TempArrayForDisplayContent[7] + "," + TempArrayForDisplayContent[8];
 
                         //how much data it can save is still unknown.
-                        tempStringToCopy += TempArrayForDisplayContent[1] + "," + TempArrayForDisplayContent[2] + "," + TempArrayForDisplayContent[3] + "," + TempArrayForDisplayContent[4] + "," + TempArrayForDisplayContent[5] + "," + TempArrayForDisplayContent[6] + "," + TempArrayForDisplayContent[7] + "," + TempArrayForDisplayContent[8]+"\r\n";
+                        tempStringToCopy += TempArrayForDisplayContent[1] + "," + TempArrayForDisplayContent[2] + "," + TempArrayForDisplayContent[3] + "," + TempArrayForDisplayContent[4] + "," + TempArrayForDisplayContent[5] + "," + TempArrayForDisplayContent[6] + "," + TempArrayForDisplayContent[7] + "," + TempArrayForDisplayContent[8] + "\r\n";
 
-                        if (count==(DevUI.Count-1))
+                        if (count == (DevUI.Count - 1))
                         {
                             File.AppendAllText(path, tempStringToCopy);
                         }
@@ -334,7 +328,7 @@ namespace Meter_Engg_VM
             ListClearFunction();
             this.progressBar_Universal.Step = 5;
             Database = comboBox_DB.Text;
-            if(!Database.Contains("Select DataBase"))
+            if (!Database.Contains("Select DataBase"))
             {
                 string dateFormatYY_MM_dd = GetDateTimeFromUser((int)Profile.UserCTime);
                 try
@@ -430,7 +424,7 @@ namespace Meter_Engg_VM
         {
             buttonLoginServer.BackColor = Color.Green;
             chirpS.ServerURL = comboBoxServerSelect.Text;
-            if(!chirpS.ServerURL.Contains("Server"))
+            if (!chirpS.ServerURL.Contains("Server"))
             {
                 richTextBox1.Text = chirpS.ServerURL + " server is selected\r\nwith given user and Password\r\nPress CS Button to proceed";
                 chirpS.emailAPI = TextBox_Username.Text;
@@ -441,11 +435,11 @@ namespace Meter_Engg_VM
                 if (File.Exists(@"C:\Program Files (x86)\Meter_Engg_VM\CacheFile.csv"))
                 {
 #if (DebugTest)
-                        File.AppendAllText(pathOfLogFile, "\r\n**********************************************");
-                        File.AppendAllText(pathOfLogFile, "\r\nTimeOfLog: " + NowTime);
-                        File.AppendAllText(pathOfLogFile, "\r\nUSER_" + TextBox_Username.Text + "_");
-                        File.AppendAllText(pathOfLogFile, "PASS_" + TextBox_Password.Text + "_");
-                        File.AppendAllText(pathOfLogFile, "URL_" + comboBoxServerSelect.Text + "_\r\n");
+                    File.AppendAllText(pathOfLogFile, "\r\n**********************************************");
+                    File.AppendAllText(pathOfLogFile, "\r\nTimeOfLog: " + NowTime);
+                    File.AppendAllText(pathOfLogFile, "\r\nUSER_" + TextBox_Username.Text + "_");
+                    File.AppendAllText(pathOfLogFile, "PASS_" + TextBox_Password.Text + "_");
+                    File.AppendAllText(pathOfLogFile, "URL_" + comboBoxServerSelect.Text + "_\r\n");
 #endif
                 }
                 else
@@ -464,9 +458,9 @@ namespace Meter_Engg_VM
             {
                 MessageBox.Show("Select Server", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
-                        
+
         }
-#endregion SelectServerPress
+        #endregion SelectServerPress
 
         #region HttpChirpStackPress
 
@@ -477,13 +471,13 @@ namespace Meter_Engg_VM
             */
         private async void button5_HttpApi(object sender, EventArgs e)              //its function talks to website or server to uplaod the meters //async
         {
-            richTextBox1.Text = "Waiting for Chirpstack Response.\r\nDont press Any Button.\r\nIf this message is still here after 30 secs,\r\nthere is a problem with ChirpStack";   
+            richTextBox1.Text = "Waiting for Chirpstack Response.\r\nDont press Any Button.\r\nIf this message is still here after 30 secs,\r\nthere is a problem with ChirpStack";
             string dateFormatYY_MM_dd = GetDateTimeFromUser((int)Profile.UserCTime);
             string ApplicationName = TextBox_ApplicationName.Text;
             string ApplicationDiscp = TextBox_ApplicationDesp.Text;
             int NumberOfMetersUploadedCS = 0;
             this.progressBar_Universal.Value = 0;
-            
+
             try
             {
                 if (DevUI.Count != 0)
@@ -503,7 +497,7 @@ namespace Meter_Engg_VM
                                 richTextBox1.Text = "The Application Name Already exists, Using Existing!"; this.progressBar_Universal.PerformStep();
                             }
                             else { SCFlag.AddingApplicationStatus = await chirpS.ChirpPostApplication(ApplicationName, ApplicationDiscp); this.progressBar_Universal.PerformStep(); }     //Chirpstack Application creation
-                                                                                                                                                                                                                            //ErrorAddingApplication = 40, SuccessAddingApplication = 41
+                                                                                                                                                                                          //ErrorAddingApplication = 40, SuccessAddingApplication = 41
                             if (SCFlag.AddingApplicationStatus == (int)ReturnList.SuccessAddingApplication || SCFlag.SearchingExistingApplication == (int)ReturnList.SuccessGettingApplication)
                             {
                                 richTextBox1.Text = "the Application ID is:: " + chirpS.ChirpPostApplID;
@@ -529,7 +523,7 @@ namespace Meter_Engg_VM
                                             else { NumberOfMetersUploadedCS++; }
                                         }
                                     }
-                                    else if(checkBoxT1_useALT.Checked && int.TryParse(AltID[i], out int TempAltID))
+                                    else if (checkBoxT1_useALT.Checked && int.TryParse(AltID[i], out int TempAltID))
                                     {
                                         if (CustVer[i] == TextBox_CustID.Text && (TempMeterRangeMinValueINT <= TempAltID && TempAltID <= TempMeterRangeMAxValueINT))
                                         {
@@ -550,7 +544,7 @@ namespace Meter_Engg_VM
                                 for (int counter = 0; counter < AlreadyPresentDevUI.Length; counter++)
                                 {
                                     if (AlreadyPresentDevUI[counter] != null)
-                                        richTextBox1.AppendText((counter+1) + ", ");
+                                        richTextBox1.AppendText((counter + 1) + ", ");
                                 }
                                 richTextBox1.AppendText("\r\nrefer File at:" + FileOutgoingDir + dateFormatYY_MM_dd);
                             }
@@ -564,15 +558,15 @@ namespace Meter_Engg_VM
                     else { richTextBox1.Text = "LOGIN Failed!\r\nTry again.\r\nYou may have missed AppliationName"; TextBox_Username.BackColor = Color.Red; TextBox_Password.BackColor = Color.Red; }
                 }
             }
-            catch(Exception)
+            catch (Exception)
             {
-                MessageBox.Show("Check the Application Name and Discription and login details,\r\nand try again\r\nCheck the Server Connection.\r\nServer may be down!");richTextBox1.Clear();
+                MessageBox.Show("Check the Application Name and Discription and login details,\r\nand try again\r\nCheck the Server Connection.\r\nServer may be down!"); richTextBox1.Clear();
             }
-            if(DevUI.Count == 0)
+            if (DevUI.Count == 0)
                 MessageBox.Show("Seems Like The Input File is Empty.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             ListClearFunction();
         }
-    #endregion HttpChirpStackPress
+        #endregion HttpChirpStackPress
 
         #endregion Buttons
 
@@ -651,7 +645,7 @@ namespace Meter_Engg_VM
 
                         if (DevUI[reference] == DevUI[comparingTo])
                         {
-                            if(comparingTo==DevUI.Count-1) //this function helps to eliminate the last duplicate element without overflow
+                            if (comparingTo == DevUI.Count - 1) //this function helps to eliminate the last duplicate element without overflow
                             {
 
                                 DevUI[reference] = DevUI[comparingTo];
@@ -660,7 +654,7 @@ namespace Meter_Engg_VM
                                 FwVersion[reference] = FwVersion[comparingTo];
                                 //MeterID[reference] = MeterID[comparingTo];
 
-                                Duplicates[reference] = numOfDuplicates+ " Dupl. Deleted";
+                                Duplicates[reference] = numOfDuplicates + " Dupl. Deleted";
                                 DevUI.RemoveAt(comparingTo);
                                 AppKey.RemoveAt(comparingTo);
                                 CustVer.RemoveAt(comparingTo);
@@ -672,7 +666,7 @@ namespace Meter_Engg_VM
                             }
                             while (DevUI[reference] == DevUI[comparingTo])
                             {
-                            
+
                                 tempAryforDuplicates[0] = DevUI[comparingTo];
                                 tempAryforDuplicates[1] = AppKey[comparingTo];
                                 tempAryforDuplicates[2] = CustVer[comparingTo];
@@ -700,7 +694,7 @@ namespace Meter_Engg_VM
                     }
                 }
             }
-            catch(Exception)
+            catch (Exception)
             {
                 MessageBox.Show("Duplicate Finded,\r\n(Index detected)\r\nDone\r\n");
                 //MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -714,18 +708,18 @@ namespace Meter_Engg_VM
             string latestfile = "";
 
             DateTime lastupdated = DateTime.MinValue;
-            foreach(FileInfo file in files)
+            foreach (FileInfo file in files)
             {
-                if(file.LastWriteTime > lastupdated)
+                if (file.LastWriteTime > lastupdated)
                 {
                     lastupdated = file.LastWriteTime;
                     latestfile = file.Name;
                 }
             }
 
-            strFilename = @"" + Folder +latestfile;
+            strFilename = @"" + Folder + latestfile;
         }
-        public void FileParsingFunction(string strFilename,int i)       //function is used to parse the data of the file and to include them into the respective lists mentioned in the declarations
+        public void FileParsingFunction(string strFilename, int i)       //function is used to parse the data of the file and to include them into the respective lists mentioned in the declarations
         {
             listView.Columns.Add("DBn", 50, HorizontalAlignment.Center);
             listView.Columns.Add("DevEUI", 150, HorizontalAlignment.Center);
@@ -743,7 +737,7 @@ namespace Meter_Engg_VM
                 if (File.Exists(strFilename))
                 {
                     #region Adding Columns
-                    
+
                     //dataGridView1.Columns[0].Name = "Release Date";
                     #endregion Adding Columns
                     #region Text Parsing function
@@ -793,7 +787,7 @@ namespace Meter_Engg_VM
                             MeterID.Add(dataincomingfromDataBase);
                             dataincomingfromDataBase = psql.GrabADatabaseWithDevEUI(DEV, dboBatchID, Database);
                             BatchID.Add(dataincomingfromDataBase);
-                            if(checkBoxT1_useALT.Checked)
+                            if (checkBoxT1_useALT.Checked)
                             {
                                 dataincomingfromDataBase = psql.GrabADatabaseWithDevEUI(DEV, dboAltID, Database);
                                 AltID.Add(dataincomingfromDataBase);
@@ -846,7 +840,7 @@ namespace Meter_Engg_VM
                 MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             DateOfprogrammingModems.Clear(); TimeOfprogrammingModems.Clear(); //these are discarded from this point
-        } 
+        }
         public void EndsightComparefunction(string path)  //tab 2 function
         {
             ErrorList ER = new ErrorList();
@@ -856,7 +850,7 @@ namespace Meter_Engg_VM
             for (int counter = 0; counter < EndsightDevUI.Count; counter++)
             {
                 string EndsightDevEuiTemp = EndsightDevUI[counter].ToLowerInvariant();
-                if (DevUI.Contains(EndsightDevEuiTemp)){    globalCounterForEndsight.Add(EndsightDevEuiTemp);   }
+                if (DevUI.Contains(EndsightDevEuiTemp)) { globalCounterForEndsight.Add(EndsightDevEuiTemp); }
             }
             for (int reference = 0; reference < DevUI.Count; reference++)
             {
@@ -866,9 +860,9 @@ namespace Meter_Engg_VM
                 {
                     while (DevUI[reference].ToLowerInvariant() == EndsightDevUI[comparingTo].ToLowerInvariant())//devEui matching?
                     {
-                        if (string.Equals(MeterID[reference] , EndsightMeterID[comparingTo]))//meterID matching?
+                        if (string.Equals(MeterID[reference], EndsightMeterID[comparingTo]))//meterID matching?
                         {
-                            if (EndsightStatus[comparingTo].Contains("ok")|| EndsightStatus[comparingTo].Contains("OK"))//status code matching?
+                            if (EndsightStatus[comparingTo].Contains("ok") || EndsightStatus[comparingTo].Contains("OK"))//status code matching?
                             {
                                 Tab2_FileAppend(reference, comparingTo, path);//why it is here? to append the correct data flaged OK into File to AMR check.
                                 DateTime dateTime = DateTime.Now;//local time taken from the computer
@@ -876,10 +870,10 @@ namespace Meter_Engg_VM
                                 if (string.IsNullOrEmpty(psql.GrabADatabaseWithMeterID(MeterID[reference], "AMRchkBy", Database)) || checkBox_UpdateAllMeters.Checked)      //check if the return is true or false  CountForreturnDbData <= 1
                                 {
                                     //MeterId, date, initialofUser, AppKey, Database, FwVersion, TxPower, FreqChannels, AppEUI
-                                    psql.PostDataToAMRCheck(MeterID[reference], dateTime, TextBox_Initials.Text,AppKey[reference], Database,FwVersion[reference],TextBox_TxPower.Text,TextBox_FreqChannels.Text,TextBox_AppEUI.Text);
+                                    psql.PostDataToAMRCheck(MeterID[reference], dateTime, TextBox_Initials.Text, AppKey[reference], Database, FwVersion[reference], TextBox_TxPower.Text, TextBox_FreqChannels.Text, TextBox_AppEUI.Text);
                                     CounterForUpdatedMetersToDB++;
                                 }
-                                DevUI.RemoveAt(reference) ;MeterID.RemoveAt(reference); AppKey.RemoveAt(reference);FwVersion.RemoveAt(reference);
+                                DevUI.RemoveAt(reference); MeterID.RemoveAt(reference); AppKey.RemoveAt(reference); FwVersion.RemoveAt(reference);
                                 if (reference != 0) { reference--; }
                                 CounterForCorrectDataSet++;
                             }
@@ -918,9 +912,9 @@ namespace Meter_Engg_VM
                 Ary_DataFromTextFile = File.ReadAllLines(pathOfLogFile);
                 DateTime FilelastWriteTime = File.GetLastWriteTime(pathOfLogFile); string FilelastWriteTime_dateOnly = FilelastWriteTime.ToString("dd");
                 DateTime FileCreationDate = File.GetCreationTime(pathOfLogFile); string FileCreationDate_OnlyD = FileCreationDate.ToString("dd"); string FileCreationDate_MDY = FileCreationDate.ToString("MM/dd/yyyy");
-                DateTime NowTime = DateTime.Now;string NowTime_OnlyD = NowTime.ToString("dd"); string NowTime_MDY = NowTime.ToString("MM/dd/yyyy");
+                DateTime NowTime = DateTime.Now; string NowTime_OnlyD = NowTime.ToString("dd"); string NowTime_MDY = NowTime.ToString("MM/dd/yyyy");
 
-                bool CompareDate=false;
+                bool CompareDate = false;
                 foreach (string TextLine in Ary_DataFromTextFile)
                 {
                     if (incrementProcessFlag)
@@ -931,49 +925,49 @@ namespace Meter_Engg_VM
 
                         int LengthOfUSER = TextLine.LastIndexOf('_') - TextLine.IndexOf("USER_");
                         string USERContent = TextLine.Substring(TextLine.IndexOf("USER_") + 5, LengthOfUSER - 5);
-                        
+
                         USERContent = USERContent.Substring(0, USERContent.IndexOf('_'));
                         TextBox_Username.Text = USERContent;
 
                         incrementProcessFlag = false;
                     }
-                    
+
                     if (TextLine.Contains("TimeOfLog:"))
                     {
                         string TimeOfLogFromFile = TextLine.Substring(10, 11);
                         try { CompareDate = 9 >= int.Parse(FilelastWriteTime_dateOnly); }
-                        catch { }    
+                        catch { }
                         if (CompareDate)
                             FilelastWriteTime_dateOnly = FilelastWriteTime.ToString("MM/d/yyyy");
                         else
                             FilelastWriteTime_dateOnly = FilelastWriteTime.ToString("MM/dd/yyyy");
 
-                        if(TimeOfLogFromFile.Contains(FilelastWriteTime_dateOnly)){ incrementProcessFlag = true; }
+                        if (TimeOfLogFromFile.Contains(FilelastWriteTime_dateOnly)) { incrementProcessFlag = true; }
                         //if (TimeOfLogFromFile.Contains(FilelastWriteTime_dateOnly))
                         //{
                         //    incrementProcessFlag = true;
                         //}
                     }
                 }
-                if(string.Equals(NowTime_OnlyD,"01") || string.Equals(NowTime_OnlyD, "15") || string.Equals(NowTime_OnlyD, "19"))
+                if (string.Equals(NowTime_OnlyD, "01") || string.Equals(NowTime_OnlyD, "15") || string.Equals(NowTime_OnlyD, "19"))
                 {
-                    if(!string.Equals(FileCreationDate_MDY, NowTime_MDY))
+                    if (!string.Equals(FileCreationDate_MDY, NowTime_MDY))
                     {
                         File.Delete(pathOfLogFile);
-                        
+
                         File.Create(pathOfLogFile);
-                        richTextBox1.AppendText("\r\nNew monthly Log file is created, Access the File anytime here: "+ pathOfLogFile);
+                        richTextBox1.AppendText("\r\nNew monthly Log file is created, Access the File anytime here: " + pathOfLogFile);
                         MessageBox.Show("\r\nNew monthly Log file is created, Access the File anytime here: " + pathOfLogFile);
                     }
-                    
+
                 }
             }
-            catch(Exception ex) { MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error); File.Create(pathOfLogFile); ; }
+            catch (Exception ex) { MessageBox.Show(ex.Message, "Message", MessageBoxButtons.OK, MessageBoxIcon.Error); File.Create(pathOfLogFile); ; }
         }
         #region ClearList Function
         public void ListClearFunction()
         {
-            
+
             listView.Clear();//if it gives you hard time delete it
             DevUI.Clear();
             EndsightDevUI.Clear();
@@ -1011,7 +1005,7 @@ namespace Meter_Engg_VM
 
         }
         #endregion ClearList Function
-    #endregion Functions DuplicateFinder, FileProcess, Fileparse, timeTrimmer
+        #endregion Functions DuplicateFinder, FileProcess, Fileparse, timeTrimmer
 
         #endregion Tab1 Functions
 
@@ -1019,7 +1013,7 @@ namespace Meter_Engg_VM
 
         private void Tab2button2_browse2(object sender, EventArgs e) //production file
         {
-            
+
             string filePath = string.Empty; var fileContent = string.Empty;
             string Endsight_filePath = textBox_EndsightFile.Text; var Endsight_fileContent = string.Empty;
 
@@ -1028,7 +1022,7 @@ namespace Meter_Engg_VM
             Endsight_filePath = LatestFileSort(Endsight_filePath);
             richTextBox1.Text = "Endsight File: " + Endsight_File1Name;
             //textBox_BrowsedFileName.Text = FileInputDir;
-            richTextBox1.AppendText("\r\nbrowse this Directory for Production files: "+FileInputDir+@"\Output-->Date."+ "\r\nName of the File: Prod&Database_<YY:MM:DD>_Counter.\r\nyou can Copy the path.");
+            richTextBox1.AppendText("\r\nbrowse this Directory for Production files: " + FileInputDir + @"\Output-->Date." + "\r\nName of the File: Prod&Database_<YY:MM:DD>_Counter.\r\nyou can Copy the path.");
             if (Endsight_filePath != null)
             {
                 using (TextFieldParser parser = new TextFieldParser(Endsight_filePath))
@@ -1059,8 +1053,8 @@ namespace Meter_Engg_VM
                 if (openFileDialog1.ShowDialog() == DialogResult.OK)
                 {
                     filePath = openFileDialog1.FileName;
-                    richTextBox1.AppendText("\r\n"+ openFileDialog1.FileName);
-                    textBox_BrowsedFileName.Text = filePath.Substring(filePath.LastIndexOf("\\")+1,(filePath.Length - filePath.LastIndexOf("\\"))-1);
+                    richTextBox1.AppendText("\r\n" + openFileDialog1.FileName);
+                    textBox_BrowsedFileName.Text = filePath.Substring(filePath.LastIndexOf("\\") + 1, (filePath.Length - filePath.LastIndexOf("\\")) - 1);
                     if (filePath != string.Empty)
                     {
                         using (TextFieldParser parser = new TextFieldParser(filePath))
@@ -1085,7 +1079,7 @@ namespace Meter_Engg_VM
                     }
                 }
             }
-            if(filePath != string.Empty)
+            if (filePath != string.Empty)
                 richTextBox1.AppendText("\r\nProduction File is selected!");
             else
                 richTextBox1.AppendText("\r\nNothing is Selected, Try Browsing again!\r\nThe Help is Here.");
@@ -1178,19 +1172,19 @@ namespace Meter_Engg_VM
             TempArrayForDisplayContent[3] = "En MeterID";
             TempArrayForDisplayContent[4] = "Status Code";
             TempArrayForDisplayContent[5] = "ModemFwRev";
-        //used for file export format
-            displayConfigArray[0] = TempArrayForDisplayContent[1] + "," + TempArrayForDisplayContent[2] + "," + TempArrayForDisplayContent[3] + "," + TempArrayForDisplayContent[4]+","+ TempArrayForDisplayContent[5];
+            //used for file export format
+            displayConfigArray[0] = TempArrayForDisplayContent[1] + "," + TempArrayForDisplayContent[2] + "," + TempArrayForDisplayContent[3] + "," + TempArrayForDisplayContent[4] + "," + TempArrayForDisplayContent[5];
             File.AppendAllLines(path, displayConfigArray);
-        //dont know the use of the following file.
-            displayConfigArray[0] = TempArrayForDisplayContent[1] + "\t" + TempArrayForDisplayContent[2] + "\t" + TempArrayForDisplayContent[3] + "\t" + TempArrayForDisplayContent[4]+"\t" + TempArrayForDisplayContent[5];
+            //dont know the use of the following file.
+            displayConfigArray[0] = TempArrayForDisplayContent[1] + "\t" + TempArrayForDisplayContent[2] + "\t" + TempArrayForDisplayContent[3] + "\t" + TempArrayForDisplayContent[4] + "\t" + TempArrayForDisplayContent[5];
         }
-            
-        public void Tab2_FileAppend(int reference,int compareTo,string path)
+
+        public void Tab2_FileAppend(int reference, int compareTo, string path)
         {
             TempArrayForDisplayContent[1] = DevUI[reference];
             TempArrayForDisplayContent[2] = MeterID[reference];
             TempArrayForDisplayContent[3] = EndsightMeterID[compareTo];
-            TempArrayForDisplayContent[4] = EndsightStatus[compareTo]+"_Endst";
+            TempArrayForDisplayContent[4] = EndsightStatus[compareTo] + "_Endst";
             TempArrayForDisplayContent[5] = FwVersion[reference];
             if (TempArrayForDisplayContent[3] == null) { TempArrayForDisplayContent[3] = "ND_Endst"; }//EndsightMeterID_ Nd is No data
             if (TempArrayForDisplayContent[4] == null) { TempArrayForDisplayContent[4] = "OK_Mnul"; }//Status Code Mnul is Manual entry
@@ -1205,8 +1199,8 @@ namespace Meter_Engg_VM
 
         private async void button2_Click(object sender, EventArgs e)
         {
-            DevUI.RemoveAt(0);MeterID.RemoveAt(0);int counterForDown = 0; filenameArray.Clear(); richTextBox_Temp.Clear(); int MeterMin = 0, MeterMax = 0;
-            progressBar_Universal.Minimum = 0; progressBar_Universal.Maximum = 100+DevUI.Count;
+            DevUI.RemoveAt(0); MeterID.RemoveAt(0); int counterForDown = 0; filenameArray.Clear(); richTextBox_Temp.Clear(); int MeterMin = 0, MeterMax = 0;
+            progressBar_Universal.Minimum = 0; progressBar_Universal.Maximum = 100 + DevUI.Count;
             progressBar_Universal.Value = 0; CounterForCorrectDataSet = 0; CounterForUpdatedMetersToDB = 0;
 
             if (!string.IsNullOrEmpty(textBox_FileSelectDelete.Text))
@@ -1243,7 +1237,7 @@ namespace Meter_Engg_VM
                                         richTextBox_Temp.AppendText(Dev + "---" + Temp_meterID + " .Error Deleting this Device.\r\n");
                                         CounterForCorrectDataSet++;//older name is used to avoid more declarations.
                                     }
-                                    if(CounterForUpdatedMetersToDB==1)
+                                    if (CounterForUpdatedMetersToDB == 1)
                                     {
                                         richTextBox_Temp.AppendText("Login Success.\r\n");
                                     }
@@ -1282,7 +1276,7 @@ namespace Meter_Engg_VM
 
         private void Button_Browse_CS_Click(object sender, EventArgs e)
         {
-            richTextBox_Temp.Clear(); richTextBox1.Clear();ListClearFunction();
+            richTextBox_Temp.Clear(); richTextBox1.Clear(); ListClearFunction();
             string filePath = string.Empty;
             using (OpenFileDialog openFileDialog1 = new OpenFileDialog())
             {
@@ -1323,7 +1317,7 @@ namespace Meter_Engg_VM
             {
                 foreach (string MID in MeterID)
                 {
-                    if(!string.Equals(MID.ToUpper(), "METERID"))//Compare(
+                    if (!string.Equals(MID.ToUpper(), "METERID"))//Compare(
                     {
                         try
                         {
@@ -1334,7 +1328,7 @@ namespace Meter_Engg_VM
                 }
                 MeterID_int.Sort();
                 label_MinValue.Text = "min: " + MeterID_int[0]; label_maxValue.Text = "max: " + MeterID_int[MeterID_int.Count - 1];
-                textBox_MeterRmin.Text = string.Empty+MeterID_int[0];
+                textBox_MeterRmin.Text = string.Empty + MeterID_int[0];
             }
             catch
             {
@@ -1354,10 +1348,10 @@ namespace Meter_Engg_VM
         #region General Functions           //function which does not belong to any tab
         #region versionNumber
         private void version_text(object sender, EventArgs e)                       //label1: Version is typed here, Hardcoded for now
-            {
-                label1.Text = ApplicationVersionnumber;
-            }
-            #endregion versionNumber
+        {
+            label1.Text = ApplicationVersionnumber;
+        }
+        #endregion versionNumber
 
         #region TextBoxforNotification
         private void richTextBox1_TextChanged(object sender, EventArgs e)
@@ -1392,25 +1386,25 @@ namespace Meter_Engg_VM
 
         }
 
-    private void TextBox_UserDateInput_MouseDown(object sender, MouseEventArgs e)
-    {
+        private void TextBox_UserDateInput_MouseDown(object sender, MouseEventArgs e)
+        {
 
-    }
+        }
 
-    private void TextBox_ApplicationDesp_MouseLeave(object sender, EventArgs e)
-    {
-        TextBox_CustID.Text = TextBox_ApplicationDesp.Text;
-    }
+        private void TextBox_ApplicationDesp_MouseLeave(object sender, EventArgs e)
+        {
+            TextBox_CustID.Text = TextBox_ApplicationDesp.Text;
+        }
 
-    private void TextBox_MeterMaxRange_TextChanged(object sender, EventArgs e)
-    {
+        private void TextBox_MeterMaxRange_TextChanged(object sender, EventArgs e)
+        {
 
-    }
+        }
 
-    private void TextBox_MeterMaxRange_TextChanged_1(object sender, EventArgs e)
-    {
+        private void TextBox_MeterMaxRange_TextChanged_1(object sender, EventArgs e)
+        {
 
-    }
+        }
 
         private void comboBoxServerSelect_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1470,17 +1464,17 @@ namespace Meter_Engg_VM
         }
 
         private void textBox4_MergeFileip(object sender, EventArgs e)
-    {
-        FileInputDir = TextBox__MergeFileinput.Text;
-    }
+        {
+            FileInputDir = TextBox__MergeFileinput.Text;
+        }
 
-    private void tabPage1_Click(object sender, EventArgs e)
-    {
-            
-    }
+        private void tabPage1_Click(object sender, EventArgs e)
+        {
+
+        }
 
 
-    #endregion Empty Functions
+        #endregion Empty Functions
 
         #region Commented program snippets
         //string dateFormatYY_MM_dd= textBox5.Text;
